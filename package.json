@@ -1,0 +1,21 @@
+{
+    "name": "@petrkukla/managed-messages",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "type": "module",
+    "scripts": {
+        "build": "bun build.ts"
+    },
+    "devDependencies": {
+        "@types/bun": "latest",
+        "bun-plugin-dts": "^0.4.0",
+        "oxfmt": "^0.56.0",
+        "oxlint": "^1.71.0"
+    },
+    "peerDependencies": {
+        "typescript": "^5"
+    },
+    "dependencies": {
+        "discord.js": "^14.26.4"
+    }
+}
