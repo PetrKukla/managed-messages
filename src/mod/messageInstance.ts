@@ -7,7 +7,7 @@ import {
     type Message,
     type MessageCreateOptions,
     MessageFlags,
-    type TextChannel
+    type SendableChannels
 } from 'discord.js';
 
 export enum RenderMode {
@@ -113,12 +113,16 @@ export class MessageInstance<TData> {
         };
     }
 
+    public async send(context: { channel: SendableChannels }): Promise<string>;
+
+    public async send(context: { interaction: CommandInteraction }): Promise<string>;
+
     /**
      * Can be only called once
      * @throws Error
      * */
     public async send(context: {
-        channel?: TextChannel;
+        channel?: SendableChannels;
         interaction?: CommandInteraction;
     }): Promise<string> {
         if (this.message) {
@@ -147,6 +151,10 @@ export class MessageInstance<TData> {
         return this.message.id;
     }
 
+    /**
+     * hooks this MessageInstance to an existing Message
+     * @throws Error
+     * */
     public async recover(message: Message) {
         this.message = message;
 
