@@ -1,10 +1,14 @@
 {
     "name": "@petrkukla/managed-messages",
+    "version": "0.1.0",
+    "type": "module",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
-    "type": "module",
     "scripts": {
         "build": "bun build.ts"
+    },
+    "dependencies": {
+        "discord.js": "^14.26.4"
     },
     "devDependencies": {
         "@types/bun": "latest",
@@ -14,8 +18,5 @@
     },
     "peerDependencies": {
         "typescript": "^5"
-    },
-    "dependencies": {
-        "discord.js": "^14.26.4"
     }
 }
