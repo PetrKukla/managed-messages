@@ -18,10 +18,11 @@ export type AllowedComponents =
 
 export type AllowedMessageFlags =
     | BitFieldResolvable<
-          'SuppressEmbeds' | 'SuppressNotifications' | 'IsComponentsV2',
+          'SuppressEmbeds' | 'SuppressNotifications' | 'IsComponentsV2' | 'Ephemeral',
           | MessageFlags.SuppressEmbeds
           | MessageFlags.SuppressNotifications
           | MessageFlags.IsComponentsV2
+          | MessageFlags.Ephemeral
       >
     | undefined;
 

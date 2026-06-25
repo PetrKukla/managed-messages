@@ -6,6 +6,7 @@ import {
     type InteractionReplyOptions,
     type Message,
     type MessageCreateOptions,
+    type MessageEditOptions,
     MessageFlags,
     type SendableChannels
 } from 'discord.js';
@@ -74,25 +75,32 @@ export class MessageInstance<TData> {
         this.data = init.data;
     }
 
-    public render(
-        mode: RenderMode.Edit
-    ): Omit<MessageCreateOptions, 'flags'> & { flags: AllowedEditFlags };
+    public render(mode?: RenderMode.SendMessage): MessageCreateOptions;
 
-    public render(mode?: RenderMode): MessageCreateOptions;
+    public render(mode: RenderMode.Edit): MessageEditOptions;
+
+    public render(mode: RenderMode.InteractionReply): InteractionReplyOptions;
 
     public render(
         mode?: RenderMode
-    ): MessageCreateOptions | (Omit<MessageCreateOptions, 'flags'> & { flags: AllowedEditFlags }) {
+    ): MessageCreateOptions | MessageEditOptions | InteractionReplyOptions {
         let flags = this.flagsLine?.(this.data);
 
         if (flags && mode == RenderMode.Edit) {
-            if (flags === 'SuppressNotifications') {
-                flags = undefined;
-            } else if (
-                (typeof flags === 'bigint' || typeof flags === 'number') &&
-                (flags & MessageFlags.SuppressNotifications) !== 0
+            if (
+                typeof flags === 'string' &&
+                ['SuppressNotifications', 'Ephemeral'].includes(flags)
             ) {
+                flags = undefined;
+            } else if (typeof flags === 'bigint' || typeof flags === 'number') {
                 flags = flags & ~MessageFlags.SuppressNotifications;
+                flags = flags & ~MessageFlags.Ephemeral;
+            }
+        } else if (flags && (mode === undefined || mode === RenderMode.SendMessage)) {
+            if (typeof flags === 'string' && ['Ephemeral'].includes(flags)) {
+                flags = undefined;
+            } else if (typeof flags === 'bigint' || typeof flags === 'number') {
+                flags = flags & ~MessageFlags.Ephemeral;
             }
         }
 
