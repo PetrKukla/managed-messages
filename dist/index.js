@@ -58342,6 +58342,8 @@ class MessageInstance {
   customIds = [];
   data;
   static async onInteractionCreate(inter) {
+    if (!inter.channel)
+      return;
     await inter.deferUpdate();
     const instance = MessageInstance.map.get(inter.message.id);
     if (!instance?.updater)
@@ -58356,9 +58358,9 @@ class MessageInstance {
       values,
       close: async () => await instance.delete(),
       interaction: {
-        guildId: inter.guildId,
-        channelId: inter.channelId,
-        messageId: inter.message.id
+        guild: inter.guild,
+        channel: inter.channel,
+        message: inter.message
       }
     });
     instance.message?.edit(instance.render(2 /* Edit */));
@@ -58373,10 +58375,17 @@ class MessageInstance {
   render(mode) {
     let flags = this.flagsLine?.(this.data);
     if (flags && mode == 2 /* Edit */) {
-      if (flags === "SuppressNotifications") {
+      if (typeof flags === "string" && ["SuppressNotifications", "Ephemeral"].includes(flags)) {
         flags = undefined;
-      } else if ((typeof flags === "bigint" || typeof flags === "number") && (flags & import_discord.MessageFlags.SuppressNotifications) !== 0) {
+      } else if (typeof flags === "bigint" || typeof flags === "number") {
         flags = flags & ~import_discord.MessageFlags.SuppressNotifications;
+        flags = flags & ~import_discord.MessageFlags.Ephemeral;
+      }
+    } else if (flags && (mode === undefined || mode === 0 /* SendMessage */)) {
+      if (typeof flags === "string" && ["Ephemeral"].includes(flags)) {
+        flags = undefined;
+      } else if (typeof flags === "bigint" || typeof flags === "number") {
+        flags = flags & ~import_discord.MessageFlags.Ephemeral;
       }
     }
     return {

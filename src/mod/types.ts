@@ -1,4 +1,9 @@
-import type { APIMessageTopLevelComponent } from 'discord.js';
+import {
+    type APIMessageTopLevelComponent,
+    Guild,
+    type Message,
+    type TextBasedChannel
+} from 'discord.js';
 import {
     type ActionRowData,
     type BitFieldResolvable,
@@ -49,9 +54,9 @@ export type Updater<TData> = (
         values: string[];
         close: () => Promise<void>;
         interaction: {
-            guildId: string | null;
-            channelId: string;
-            messageId: string;
+            guild: Guild | null;
+            channel: TextBasedChannel;
+            message: Message;
         };
     }
 ) => TData | Promise<TData>;

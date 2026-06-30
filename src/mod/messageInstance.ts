@@ -32,6 +32,8 @@ export class MessageInstance<TData> {
     public data: TData;
 
     public static async onInteractionCreate(inter: ButtonInteraction | AnySelectMenuInteraction) {
+        if (!inter.channel) return;
+
         await inter.deferUpdate();
 
         const instance = MessageInstance.map.get(inter.message.id);
@@ -51,9 +53,9 @@ export class MessageInstance<TData> {
             values,
             close: async () => await instance.delete(),
             interaction: {
-                guildId: inter.guildId,
-                channelId: inter.channelId,
-                messageId: inter.message.id
+                guild: inter.guild,
+                channel: inter.channel,
+                message: inter.message
             }
         });
 
